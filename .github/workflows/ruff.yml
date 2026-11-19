@@ -1,0 +1,17 @@
+name: Ruff  #Nom affiché dans les actions de github
+
+on: #Définit quand la vérification se lance
+  push:
+  pull_request:
+
+jobs: #contient la liste des tâches à exécuter. Ici, il n’y en a qu’une, appelée ruff. C’est ce nom que vous retrouverez plus tard pour la rendre obligatoire sur les Pull Requests.
+  ruff:
+    runs-on: ubuntu-latest  #Sur quelle machine la tâche tourne. GitHub démarre pour vous une machine Linux (Ubuntu) toute neuve, vide, puis la supprime à la fin. C’est gratuit pour un usage normal
+    steps: #La liste des étapes, exécutées dans l’ordre. Chaque ligne qui commence par un tiret - est une étape. Si une étape échoue, les suivantes ne sont pas lancées et la vérification est marquée en rouge.
+      - uses: actions/checkout@v4 #Récupère votre code sur la machine. Sans cette étape, la machine est vide et Ruff n’aurait rien à vérifier. uses: veut dire « utilise une action toute faite », fournie ici par GitHub. @v4 est sa version
+      - uses: actions/setup-python@v5 #Installe Python sur la machine. with: sert à donner des réglages à l’action : ici, la version de Python. Mettez de préférence la même version que dans votre environnement env (python --version pour la voir).
+        with:
+          python-version: "3.12"
+      - run: pip install ruff==0.17.5  #run: veut dire « exécute cette commande », exactement comme dans votre terminal. Ici, on installe Ruff dans la même version que chez vous, pour que GitHub et votre machine donnent les mêmes résultats.
+      - run: ruff check .   #Cherche les erreurs dans le code
+      - run: ruff format --check . #Vérifie que le code est bien formaté, sans rien modifier, grâce à --check
